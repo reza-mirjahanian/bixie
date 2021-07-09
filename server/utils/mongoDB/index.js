@@ -25,7 +25,11 @@ class Database {
         }
 
         const connectionConfig = _.get(constants.MONGODB.connections, connectionName);
-        _.set(connectionsMapper, connectionName, mongoose.createConnection(connectionConfig.uri));
+        _.set(connectionsMapper, connectionName, mongoose.createConnection(connectionConfig.uri,
+            {
+                useNewUrlParser: true,
+            }
+        ));
 
         return _.get(connectionsMapper, connectionName);
     }
@@ -40,7 +44,6 @@ class Database {
 
         const modelObject = this._loadModelObject(model);
         const connection = this.getConnection(modelObject.connection());
-
         const mongooseModel = connection.model(model, modelObject.schema(), collectionName || modelObject.collectionName());
         mongooseModel.getConnectionName = () => modelObject.connection();
 
@@ -48,13 +51,7 @@ class Database {
         return _.get(modelsMapper, modelKey);
     }
 
-    get objectId() {
-        return mongoose.Types.ObjectId;
-    }
 
-    get Decimal128() {
-        return mongoose.Types.Decimal128;
-    }
 
 
     _capitalizeModelName(string) {
