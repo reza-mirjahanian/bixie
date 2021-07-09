@@ -1,1 +1,3 @@
-# bixie
+# README #
+
+This is the Bixie technical task
