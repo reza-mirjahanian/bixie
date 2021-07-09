@@ -8,7 +8,7 @@ const
     localUri = 'mongodb://localhost:27017/';
 
 const constants = {
-    EXPRESS_PORT: Number(process.env.EXPRESS_PORT) || 3100,
+    EXPRESS_PORT: Number(process.env.PORT) || 3100,
     API: {
         INDEGO: {
             QUERY_INDEGO_URL: process.env.API_INDEGO_QUERY_INDEGO_URL || 'https://kiosks.bicycletransit.workers.dev/phl',
