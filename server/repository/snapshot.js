@@ -52,7 +52,6 @@ class Snapshot {
                     if (dayData) {
                         const station = _.find(_.get(dayData, 'stations', []), o => _.get(o, 'properties.id') === kioskId);
                         output.push({
-                            day,
                             at: moment(_.get(dayData, 'at', "")).utc().format('YYYY-MM-DDTHH:00:00'),
                             station,
                             weather: _.get(dayData, 'weather', {})
