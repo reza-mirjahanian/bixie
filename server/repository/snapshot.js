@@ -47,21 +47,21 @@ class Snapshot {
                 dailyRange.forEach((day) => {
                     const dayData = _.find(dataInRange, o => {
                         let recordDate = moment(o.at).utc();
-                        return recordDate.isSame(day, 'day')  && recordDate.isSameOrAfter(day);
+                        return recordDate.isSame(day, 'day') && recordDate.isSameOrAfter(day);
                     });
-                    if(dayData){
+                    if (dayData) {
                         const station = _.find(_.get(dayData, 'stations', []), o => _.get(o, 'properties.id') === kioskId);
                         output.push({
                             day,
                             at: moment(_.get(dayData, 'at', "")).utc().format('YYYY-MM-DDTHH:00:00'),
                             station,
-                            weather: _.get(dayData, 'weather', {})})
+                            weather: _.get(dayData, 'weather', {})
+                        })
                     }
                 });
 
                 return output;
             }
-
 
 
         } catch (e) {
@@ -70,21 +70,15 @@ class Snapshot {
         }
     }
 
-    static async findFirstAfter({at}) {
+    static async findAt({at}) {
         try {
             if (!at || !moment(at).isValid()) {
                 return null;
             }
             const searchTime = moment.utc(at);
-            const record = await IndegoSnapshot.findOne({
-                at: {$gte: searchTime}
+            return await IndegoSnapshot.findOne({
+                at: searchTime
             }).lean();
-
-            return {
-                at,
-                stations: _.get(record, 'stations', []),
-                weather: _.get(record, 'weather', {})
-            };
 
         } catch (e) {
             logger.error("Snapshot:findOne()", e);

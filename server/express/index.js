@@ -17,9 +17,16 @@ app.get('/', (req, res) => res.send('Server is running'));
 app.get('/api/v1/stations', async (req, res) => {
     try {
         const {at} = req.query;
-        const data = await SnapshotRepo.findFirstAfter({at});
+        const data = await SnapshotRepo.findAt({at});
         if (data) {
-            return res.status(200).send(data);
+            const weather = _.get(data, 'weather', {});
+            const stations = _.get(data, 'stations', {});
+            return res.status(200).send({
+                at,
+                stations,
+                weather
+            });
+
         }
         res.status(404).send("Error");
 
@@ -39,16 +46,19 @@ app.get('/api/v1/stations/:kioskId', async (req, res) => {
         const kioskId = _.toNumber(_.get(req, 'params.kioskId'));
         if (kioskId > 0) {
             if (at) {
-                const data = await SnapshotRepo.findFirstAfter({at});
-                const station = _.find(_.get(data, 'stations', []), item => _.get(item, 'properties.id') === kioskId);
-                const weather = _.get(data, 'weather', {});
-                if (weather && station) {
-                    return res.status(200).send({
-                        at,
-                        station,
-                        weather
-                    });
+                const data = await SnapshotRepo.findAt({at});
+                if (data) {
+                    const station = _.find(_.get(data, 'stations', []), item => _.get(item, 'properties.id') === kioskId);
+                    const weather = _.get(data, 'weather', {});
+                    if (weather && station) {
+                        return res.status(200).send({
+                            at,
+                            station,
+                            weather
+                        });
+                    }
                 }
+
             }
             if (from && to && moment(to).isValid() && moment(from).isValid()) {
                 const searchFrom = moment.utc(from);
