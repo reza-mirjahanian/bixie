@@ -1,6 +1,6 @@
 'use strict';
 const CITY = process.env.API_KEY_OPEN_WEATHER_MAP_CITY || 'Philadelphia';
-const API_KEY = process.env.API_KEY_OPEN_WEATHER_MAP || '6c695fa937318b713de64bd7998c6e8b';//@todo remove me;
+const API_KEY = process.env.API_KEY_OPEN_WEATHER_MAP || '';//@todo remove me;
 
 const
     isDevMode = process.env.NODE_ENV !== 'production',
