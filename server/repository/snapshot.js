@@ -45,15 +45,18 @@ class Snapshot {
                 }).sort({
                     at: sort
                 }).lean();
-
-                return _.map(dataInRange, (data) => {
+                const output = [];
+                _.forEach(dataInRange, (data) => {
                     const station = _.find(_.get(data, 'stations', []), o => _.get(o, 'properties.id') === kioskId);
-                    return {
-                        at: moment(_.get(data, 'at', "")).utc().format('YYYY-MM-DDTHH:00:00'),
-                        station,
-                        weather: _.get(data, 'weather', {})
+                    if (station) {
+                        output.push({
+                            at: moment(_.get(data, 'at', "")).utc().format('YYYY-MM-DDTHH:00:00'),
+                            station,
+                            weather: _.get(data, 'weather', {})
+                        })
                     }
                 });
+                return output;
             }
             if (frequency === 'daily') {
                 const dataInRange = await IndegoSnapshot.find({
@@ -70,11 +73,14 @@ class Snapshot {
                     });
                     if (dayData) {
                         const station = _.find(_.get(dayData, 'stations', []), o => _.get(o, 'properties.id') === kioskId);
-                        output.push({
-                            at: moment(_.get(dayData, 'at', "")).utc().format('YYYY-MM-DDTHH:00:00'),
-                            station,
-                            weather: _.get(dayData, 'weather', {})
-                        })
+                        if (station) {
+                            output.push({
+                                at: moment(_.get(dayData, 'at', "")).utc().format('YYYY-MM-DDTHH:00:00'),
+                                station,
+                                weather: _.get(dayData, 'weather', {})
+                            })
+                        }
+
                     }
                 });
 
