@@ -5,6 +5,12 @@ const _ = require('lodash'),
     moment = require('moment'),
     IndegoSnapshot = require('../utils/mongoDB').getModel('BixieIndegoSnapshot');
 
+/**
+ * Helper function that generate day by day range.
+ * @param {string} startDate - First day.
+ * @param {string} endDate - Last day
+ * @returns {[{moment}]} Array of days at 12:00 noon.
+ */
 const _generateDateRange = (startDate, endDate) => {
     const today = moment(endDate);
     const from = moment(startDate);
@@ -17,6 +23,19 @@ const _generateDateRange = (startDate, endDate) => {
 
 class Snapshot {
 
+    /**
+     * Search snapshot between two date
+     * @param {Date} from - First day.
+     * @param {Date} to - Last day
+     * @param {Number} kioskId - Kiosk ID
+     * @param {('daily' | 'hourly')} frequency - Aggregate output
+     * @param {(1|-1)} sort - Sort
+     * @returns {Promise<[{
+     *       at : string,
+     *       station: {},
+     *       weather: {}
+     * }]>}
+     */
     static async findInRange({from, to, sort = 1, kioskId, frequency}) {
         try {
 
@@ -69,6 +88,15 @@ class Snapshot {
         }
     }
 
+    /**
+     *
+     * @param {string} at Date
+     * @return {Promise<{
+     *       at : string,
+     *       stations: {},
+     *       weather: {}
+     * }|null>}
+     */
     static async findAt({at}) {
         try {
             if (!at || !moment(at).isValid()) {
@@ -101,7 +129,15 @@ class Snapshot {
         }
     }
 
-
+    /**
+     *
+     * @param {Date} at Date
+     * @return {Promise<{
+     *       at : string,
+     *       stations: {},
+     *       weather: {}
+     * }|null>}
+     */
     static async findOne(at) {
         try {
             return await IndegoSnapshot.findOne({
