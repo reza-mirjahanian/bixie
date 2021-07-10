@@ -71,8 +71,21 @@ describe('Testing Express API routes', () => {
             await snapshotRepo.insert(moment.utc(from), [{properties: {id: kioskId}}, 2], {});
             await snapshotRepo.insert(moment.utc(to), [{properties: {id: kioskId}}, 2], {});
             await snapshotRepo.insert(moment.utc(to), [{properties: {id: kioskId + 1}}, 2], {});
-            await snapshotRepo.insert(moment.utc('2021-07-09T11:00:00'), [{properties: {id: kioskId }}, 2], {});
+            await snapshotRepo.insert(moment.utc('2021-07-09T11:00:00'), [{properties: {id: kioskId}}, 2], {});
             const {data: response} = await axios.get(`http://localhost:${constants.EXPRESS_PORT}/api/v1/stations/${kioskId}?from=${from}&to=${to}`);
+            (response.length).should.be.equal(2);
+        });
+
+        it('should returns response for one station over a range of times (Daily) ', async () => {
+            const from = `2021-07-09T12:00:00`;
+            const to = `2021-07-10T16:00:00`;
+            const kioskId = 3004;
+            await snapshotRepo.insert(moment.utc('2021-07-09T07:00:00'), [{properties: {id: kioskId}}, 2], {});
+            await snapshotRepo.insert(moment.utc(from), [{properties: {id: kioskId}}, 2], {});
+            await snapshotRepo.insert(moment.utc(to), [{properties: {id: kioskId}}, 2], {});
+            await snapshotRepo.insert(moment.utc(to), [{properties: {id: kioskId + 1}}, 2], {});
+            await snapshotRepo.insert(moment.utc('2021-07-19T11:00:00'), [{properties: {id: kioskId}}, 2], {});
+            const {data: response} = await axios.get(`http://localhost:${constants.EXPRESS_PORT}/api/v1/stations/${kioskId}?from=${from}&to=${to}&frequency=daily`);
             (response.length).should.be.equal(2);
         });
 
