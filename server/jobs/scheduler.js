@@ -9,7 +9,7 @@ const cronInterval = constants.SCHEDULER_CRON_MONITOR_INTERVAL;
 const jobs = [];
 jobs.push(insertSnapshotHourly);
 
-
+// Cron job for running jobs in list,
 module.exports = () => {
     try {
 

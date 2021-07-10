@@ -6,6 +6,7 @@ const logger = require('../utils/logger'),
     Indego = require('../repository/indego'),
     moment = require('moment');
 
+// Ensure snapshot is inserted once in the last hour.
 class InsertSnapshotHourly {
 
 
